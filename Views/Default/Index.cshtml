@@ -1,0 +1,64 @@
+﻿@model IEnumerable<ASPNetFrmwrkRapid.Models.contact>
+@{
+	ViewBag.Title = "Index";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>Davie B-B-Brueny's far-out, pyschodelic, groovy contact aggregator</h2>
+This ASP.NET .NET Framework MVC app reads 3 .txt files of company contacts with different delimiters (comma, hyphen, hash) and fields. 
+The controller puts them into a list.  The view (.cshtml) puts them into a table that's sortable asc & desc by some column headings 
+and indicated by arrow icons.  It also has a button to export the contacts in the current sort order to .csv.<br/><br/>
+<!--<img src="C:\Users\Owner\Documents\Visual Studio 2019\ASPNetFrmwrkRapid\Views\Default\upArrow.png"/>-->
+<!--<img src="@Url.Content("~/Content/upArrow.png")" height="20" width="20"/>-->
+@{string companySort = ""; string contactSort = ""; string yearSort = "";
+	//string upArrow = @"<img src=""C:\Users\Owner\Documents\Visual Studio 2019\ASPNetFrmwrkRapid\Views\Default\upArrow.png""/>";}
+	string companyUpDown = ""; string contactUpDown = ""; string yearsUpDown = "";}
+@{ if (ViewBag.sortEm.Contains("contact") || ViewBag.sortEm.Contains("year") || String.IsNullOrEmpty(ViewBag.sortEm)) {
+		companySort = "companyAsc"; companyUpDown = "blank";
+	}
+	else if (ViewBag.sortEm == "companyAsc") {
+		companySort = "companyDesc"; companyUpDown = "up";
+	}
+	else if (ViewBag.sortEm == "companyDesc" ) {
+		companySort = "companyAsc"; companyUpDown = "down";
+	}
+}
+@{ if (ViewBag.sortEm.Contains("company") || ViewBag.sortEm.Contains("year") || String.IsNullOrEmpty(ViewBag.sortEm)) {
+		contactSort = "contactAsc"; contactUpDown = "blank";
+	}
+	else if (ViewBag.sortEm == "contactDesc") {
+		contactSort = "contactAsc"; contactUpDown = "down";
+	}
+	else if (ViewBag.sortEm == "contactAsc"){
+		contactSort = "contactDesc"; contactUpDown = "up";
+	}
+}
+@{ if (ViewBag.sortEm.Contains("company") || ViewBag.sortEm.Contains("contact") || String.IsNullOrEmpty(ViewBag.sortEm)) {
+		yearSort = "yearAsc"; yearsUpDown = "blank";
+	}
+	else if (ViewBag.sortEm == "yearDesc") {
+		yearSort = "yearAsc"; yearsUpDown = "down";
+	}
+	else if (ViewBag.sortEm == "yearAsc") {
+		yearSort = "yearDesc"; yearsUpDown = "up";
+	}
+}
+<table class="datatable">
+<tr><th width="170">@Html.ActionLink("Company Name", "Index", new { sortOrder = companySort }) 
+	<img src='@Url.Content("~/Content/" + companyUpDown + "Arrow.png")' height="20" width="20"/></th>
+    <th width="170">@Html.ActionLink("Contact Name", "Index", new { sortOrder = contactSort })
+		<img src='@Url.Content("~/Content/" + contactUpDown + "Arrow.png")' height="20" width="20"/></th>
+	<th>@Html.ActionLink("Years In Business", "Index", new { sortOrder = yearSort })
+		<img src='@Url.Content("~/Content/" + yearsUpDown + "Arrow.png")' height="20" width="20"/></th>
+	<th>Contact Phone Number</th>
+	<th>Contact Email</th>
+</tr>
+@foreach (var item in Model) {
+    <tr><td> @Html.DisplayFor(modelItem => item.companyName)</td>
+        <td> @Html.DisplayFor(modelItem => item.contactName) </td>
+		<td> @Html.DisplayFor(modelItem => item.yearsInBusiness) </td>
+		<td> @Html.DisplayFor(modelItem => item.phone) </td>
+		<td> @Html.DisplayFor(modelItem => item.email) </td>
+    </tr>
+}
+</table><br/>
+@Html.ActionLink("Export To CSV", "exportToCSV", new { sortOrder = ViewBag.sortEm })
